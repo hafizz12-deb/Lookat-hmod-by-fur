@@ -1,1 +1,20 @@
-
+name: Build lookat.hmod
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add wasm target
+        run: rustup update stable && rustup target add wasm32-unknown-unknown
+      - name: Install cargo-horizon-mod
+        run: cargo install --git https://github.com/horizon-rust/horizon cargo-horizon-mod
+      - name: Build
+        run: cargo horizon-mod build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lookat-hmod
+          path: target/horizon-mod/lookat.hmod
